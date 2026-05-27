@@ -1,33 +1,26 @@
-IntelliJ
+# Maven build outputs
+target/
+**/target/
 
+# Keep Maven Wrapper jar, ignore other wrapper junk if any
+!.mvn/wrapper/maven-wrapper.jar
+
+# IntelliJ IDEA
 .idea/
 *.iml
 
-Maven
+# VS Code
+.vscode/
 
-target/
-
-Logs
-
-*.log
-
-OS files
-
+# OS files
 .DS_Store
 Thumbs.db
 
-Environment
+# Logs
+*.log
 
+# Build output (rare, but safe)
+out/
+
+# Environment files
 .env
-
-Mac/Linux
-
-*.swp
-
-Java
-
-*.class
-
-VSCode
-
-.vscode/
