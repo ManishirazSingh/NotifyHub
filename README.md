@@ -18,3 +18,7 @@ Production style distributed notification system using Spring Boot microservices
 - Observability
 
 - Dockerized Local Runtime
+
+## Current Status
+
+Currently in Phase 0 — Project Foundation.
