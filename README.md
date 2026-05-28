@@ -3,121 +3,118 @@
 NotifyHub is a distributed notification processing platform being built using production-style backend engineering patterns with Java and Spring Boot.
 
 The architecture, module boundaries, and implementation roadmap are defined in docs/PROJECT_SPEC.md.
-## Planned Features
-
-- API Gateway
-
-- Notification Service
-
-- Kafka-based async delivery
-
-- Transactional Outbox Pattern
-
-- Retry + DLQ
-
-- Redis Idempotency
-
-- Observability
-
-- Dockerized Local Runtime
-
 ## Current Status
 
-Phase 2 Status — Notification API ✅
+Phase 3 Status — PostgreSQL Integration + Persistence Layer ✅
 
-Phase 2 introduces the first working slice of notification-service.
+Phase 3 introduces database persistence and production-grade backend foundations for the notification-service.
 
-Implemented in this phase:
+## ✅ What is implemented in Phase 3
 
-* Java 17 multi-module Maven project structure
-* API Gateway service bootstrap
-* Notification Service bootstrap
-* Notification REST API implementation
-* Request/response DTO structure
-* Service layer abstraction
-* Notification type enum support
-* Notification request processing flow
+###  Database Layer
+- PostgreSQL integration using Spring Boot
+- JPA/Hibernate ORM setup
+- Flyway migration-based schema management
 
+### Persistence
+- Notification entity mapped to database table
+- UUID-based primary key generation
+- Repository layer using Spring Data JPA
 
+###  API Enhancements
+- POST /notifications → persists notification in DB
+- GET /notifications/{id} → fetches notification by UUID
 
+###  Domain Modeling
+- NotificationStatus enum for type-safe state management
+- NotificationType enum for channel abstraction
 
+###  Validation & Safety
+- Request validation using Bean Validation (@Valid)
+- Global exception handling with proper HTTP status codes
+- 404 handling for missing resources
 
-### Current modules:
+### ️ Auditing
+- Automatic createdAt timestamp using @PrePersist
 
-* common-lib
-* api-gateway
-* notification-service
+###  Transaction Management
+- Service layer transactional boundaries using @Transactional
 
-### Planned future modules:
-
-* outbox-worker
-* email-service
-* sms-service
-* push-service
-
-⸻
-
+---
 ## Notification API
 
 Base URL for local development:
 
 http://localhost:8081
 
-POST /notifications
+---
 
-Creates a notification request and returns a generated notification identifier.
+### POST /notifications
 
-### Example:
+Creates a notification request and persists it into PostgreSQL.
 
- POST http://localhost:8081/notifications \
--H "Content-Type: application/json" \
--d '{
-"userId": "user-123",
-"type": "EMAIL",
-"title": "Welcome",
-"message": "Hello from NotifyHub"
-}'
+Example:
+POST http://localhost:8081/notifications  
+-Header "Content-Type: application/json"  
+-body '{ "userId": "user-123", "type": "EMAIL", "title": "Welcome", "message": "Hello from NotifyHub" }'
 
 Expected response:
 
 {
 "notificationId": "generated-uuid",
-"status": "QUEUED"
+"status": "QUEUED",
+"type": "EMAIL",
+"createdAt": "timestamp"
 }
-Currently in Phase 1 — Project Bootstrap.
 
 ---
 
-# Modules
+### GET /notifications/{id}
 
-## api-gateway
+Fetches a persisted notification from PostgreSQL.
 
-Entry point for all client requests. Handles routing to internal services.
+Example:
+GET http://localhost:8081/notifications/{notificationId}
 
-## notification-service
+Expected response:
 
-Core service responsible for processing and managing notifications.
+{
+"notificationId": "uuid",
+"status": "QUEUED",
+"type": "EMAIL",
+"createdAt": "timestamp"
+}
 
-## common-lib
+##  Database Schema (Flyway Managed)
 
-Shared utilities, DTOs, and reusable components.
+Table: notifications
+
+Columns:
+- id (UUID / VARCHAR) — Primary Key
+- user_id (VARCHAR)
+- type (VARCHAR)
+- title (VARCHAR)
+- message (TEXT)
+- status (VARCHAR stored as ENUM STRING)
+- created_at (TIMESTAMP generated via @PrePersist)
 
 ---
+## Current State
 
-# Current State
-
-Multi-module Maven setup
-
-API Gateway running
-
-Notification Service running
-
+Multi-module Maven setup  
+API Gateway running  
+Notification Service running  
+PostgreSQL integration complete  
+Flyway schema migrations active  
 Independent service ports configured
 
-Next Phase Goals
+---
 
-* Notification REST APIs
-* Database integration (PostgreSQL)
-* Event publishing (Kafka)
-* Transactional Outbox pattern
-* Redis idempotency layer
+## Next Phase Goals
+
+Transactional Outbox pattern implementation  
+Event publishing foundation for Kafka integration  
+Redis idempotency layer  
+Retry + DLQ mechanisms  
+Kafka-based async delivery system  
+Observability (logs, metrics, tracing)
