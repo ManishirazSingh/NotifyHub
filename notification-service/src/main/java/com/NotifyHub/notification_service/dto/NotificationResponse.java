@@ -1,15 +1,26 @@
 package com.NotifyHub.notification_service.dto;
 
+import com.NotifyHub.notification_service.enums.NotificationStatus;
+import com.NotifyHub.notification_service.enums.NotificationType;
+
+import java.time.LocalDateTime;
+
 public class NotificationResponse {
 
     private String notificationId;
-    private String status;
+    private NotificationStatus status;
+    private NotificationType type;
+    private LocalDateTime createdAt;
 
-    public NotificationResponse(String notificationId, String status) {
+    public NotificationResponse(String notificationId, NotificationStatus status,NotificationType type, LocalDateTime createdAt) {
         this.notificationId = notificationId;
         this.status = status;
+        this.type=type;
+        this.createdAt=createdAt;
     }
 
     public String getNotificationId() { return notificationId; }
-    public String getStatus() { return status; }
+    public NotificationStatus getStatus() { return status; }
+    public NotificationType getType() { return type;}
+    public LocalDateTime getCreatedAt(){ return createdAt; }
 }

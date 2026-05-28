@@ -1,12 +1,18 @@
 package com.NotifyHub.notification_service.dto;
 
 import com.NotifyHub.notification_service.enums.NotificationType;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public class NotificationRequest {
 
+    @NotBlank
     private String userId;
+    @NotNull
     private NotificationType type;
+    @NotBlank
     private String title;
+    @NotBlank
     private String message;
 
     public String getUserId() { return userId; }
