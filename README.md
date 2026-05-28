@@ -1,6 +1,8 @@
 # NotifyHub
-Production style distributed notification system using Spring Boot microservices, Kafka, PostgreSQL, Redis and Docker Compose.
 
+NotifyHub is a distributed notification processing platform being built using production-style backend engineering patterns with Java and Spring Boot.
+
+The architecture, module boundaries, and implementation roadmap are defined in docs/PROJECT_SPEC.md.
 ## Planned Features
 
 - API Gateway
@@ -21,40 +23,64 @@ Production style distributed notification system using Spring Boot microservices
 
 ## Current Status
 
-Currently in Phase 1 — Project Bootstrap.
+Phase 2 Status — Notification API ✅
 
----
+Phase 2 introduces the first working slice of notification-service.
 
-# Modules
+Implemented in this phase:
 
-## api-gateway
+* Java 17 multi-module Maven project structure
+* API Gateway service bootstrap
+* Notification Service bootstrap
+* Notification REST API implementation
+* Request/response DTO structure
+* Service layer abstraction
+* Notification type enum support
+* Notification request processing flow
 
-Entry point for all client requests. Handles routing to internal services.
 
-## notification-service
 
-Core service responsible for processing and managing notifications.
 
-## common-lib
 
-Shared utilities, DTOs, and reusable components.
+### Current modules:
 
----
+* common-lib
+* api-gateway
+* notification-service
 
-# Current State
+### Planned future modules:
 
-Multi-module Maven setup
+* outbox-worker
+* email-service
+* sms-service
+* push-service
 
-API Gateway running
+⸻
 
-Notification Service running
+## Notification API
 
-Independent service ports configured
+Base URL for local development:
 
-Next Phase Goals
+http://localhost:8081
 
-* Notification REST APIs
-* Database integration (PostgreSQL)
-* Event publishing (Kafka)
-* Transactional Outbox pattern
-* Redis idempotency layer
+POST /notifications
+
+Creates a notification request and returns a generated notification identifier.
+
+### Example:
+
+ POST http://localhost:8081/notifications \
+-H "Content-Type: application/json" \
+-d '{
+"userId": "user-123",
+"type": "EMAIL",
+"title": "Welcome",
+"message": "Hello from NotifyHub"
+}'
+
+Expected response:
+
+{
+"notificationId": "generated-uuid",
+"status": "QUEUED"
+}
