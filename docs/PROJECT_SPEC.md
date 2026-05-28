@@ -1,6 +1,6 @@
-NotifyHub Project Specification
+# NotifyHub Project Specification
 
-1. Overview
+## 1. Overview
 
 NotifyHub is a distributed notification processing platform designed for reliable asynchronous event-driven communication.
 
@@ -22,7 +22,7 @@ NotifyHub uses Kafka as the messaging backbone and follows production-style arch
 
 ⸻
 
-2. Technology Stack
+## 2. Technology Stack
 
 Area	Technology
 Language	Java 17
@@ -36,7 +36,7 @@ Containerization	Docker Compose
 
 ⸻
 
-3. High-Level Architecture
+## 3. High-Level Architecture
 
 System Architecture Diagram
 
@@ -103,7 +103,7 @@ System Architecture Diagram
 
 ⸻
 
-4. Core Components
+## 4. Core Components
 
 4.1 API Gateway
 
@@ -225,7 +225,7 @@ Redis is used for:
 
 ⸻
 
-5. Notification Processing Flow
+## 5. Notification Processing Flow
 
 Step 1 — Request Submission
 
@@ -295,7 +295,7 @@ Failed events trigger:
 
 ⸻
 
-6. Reliability Patterns
+## 6. Reliability Patterns
 
 Transactional Outbox
 
@@ -334,26 +334,25 @@ Consumers safely handle duplicate event delivery caused by:
 
 ⸻
 
-7. Planned Development Phases
+## 7. Planned Development Phases
 
-Phase	Description
-Phase 0	Project Foundation
-Phase 1	Multi-Module Maven Bootstrap
-Phase 2	API Gateway Setup
-Phase 3	Notification REST API
-Phase 4	PostgreSQL Integration
-Phase 5	Transactional Outbox
-Phase 6	Kafka Integration
-Phase 7	Consumer Services
-Phase 8	Redis Idempotency
-Phase 9	Retry + DLQ
-Phase 10	Observability
-Phase 11	Docker Compose Runtime
-Phase 12	Production Polish
+Phase	 Description
+Phase 0	 Project Foundation
+Phase 1	 Multi-Module Maven Bootstrap
+Phase 2	 Notification REST API
+Phase 3	 Persistence Layer
+Phase 4	 Transactional Outbox
+Phase 5	 Kafka Integration
+Phase 6	 Consumer Services
+Phase 7	 Redis Idempotency
+Phase 8	 Retry + DLQ
+Phase 9	 Observability
+Phase 10 Docker Compose Runtime
+Phase 11 Production Polish
 
 ⸻
 
-8. Engineering Principles
+## 8. Engineering Principles
 
 * Incremental architectural evolution
 * Reliable asynchronous processing
@@ -364,7 +363,7 @@ Phase 12	Production Polish
 
 ⸻
 
-9. Future Enhancements
+## 9. Future Enhancements
 
 Potential future enhancements:
 
