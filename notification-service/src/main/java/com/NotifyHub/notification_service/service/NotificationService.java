@@ -5,6 +5,7 @@ import com.NotifyHub.notification_service.dto.NotificationResponse;
 import com.NotifyHub.notification_service.entity.Notification;
 import com.NotifyHub.notification_service.exception.NotificationNotFoundException;
 import com.NotifyHub.notification_service.repository.NotificationRepository;
+import com.NotifyHub.notification_service.repository.OutboxEventRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,9 +15,11 @@ import java.util.UUID;
 @Service
 public class NotificationService {
     private final NotificationRepository repository;
-    public NotificationService(NotificationRepository repository)
+    private final OutboxEventRepository outboxEventRepository;
+    public NotificationService(NotificationRepository repository, OutboxEventRepository outboxEventRepository)
     {
         this.repository=repository;
+        this.outboxEventRepository=outboxEventRepository;
     }
     @Transactional
     public NotificationResponse send(NotificationRequest req)
