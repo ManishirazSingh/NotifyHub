@@ -1,0 +1,21 @@
+package com.NotifyHub.notification_service.service;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Service;
+
+@Service
+public class KafkaProducerService {
+
+    private final KafkaTemplate<String, String> kafkaTemplate;
+
+    @Value("${app.kafka.notification-topic}")
+    private String notificationTopic;
+    public KafkaProducerService(KafkaTemplate<String, String> kafkaTemplate) {
+        this.kafkaTemplate = kafkaTemplate;
+    }
+
+    public void publish(String Payload) {
+        kafkaTemplate.send(notificationTopic, Payload);
+    }
+}

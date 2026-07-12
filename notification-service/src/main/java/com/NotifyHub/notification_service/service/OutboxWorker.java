@@ -12,9 +12,11 @@ import jakarta.transaction.Transactional;
 @Service
 public class OutboxWorker {
     private final OutboxEventRepository outboxEventRepository;
+    private final KafkaProducerService kafkaProducerService;
 
-    public OutboxWorker(OutboxEventRepository outboxEventRepository) {
+    public OutboxWorker(OutboxEventRepository outboxEventRepository, KafkaProducerService kafkaProducerService) {
         this.outboxEventRepository = outboxEventRepository;
+        this.kafkaProducerService = kafkaProducerService;
     }
 
     @Scheduled(fixedRate = 5000) // Runs every 5 seconds
@@ -22,8 +24,14 @@ public class OutboxWorker {
     public void processOutboxEvents() {
         List<OutboxEvent> events = outboxEventRepository.findByStatus(OutboxStatus.NEW);
         for(OutboxEvent event : events){
-            System.out.println("Publishing Event : " + event.getPayload());
-            event.setStatus(OutboxStatus.PROCESSED);
+            try {
+                kafkaProducerService.publish(event.getPayload());
+                event.setStatus(OutboxStatus.PROCESSED);
+            } catch (Exception e) {
+                // Log the error and continue processing other events
+                System.err.println("Failed to process event with ID: " + event.getId() + ". Error: " + e.getMessage());
+                event.setStatus(OutboxStatus.FAILED);
+            }
         }
     }
 }
