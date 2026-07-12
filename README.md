@@ -6,47 +6,31 @@ The architecture, module boundaries, and implementation roadmap are defined in d
 
 ## Current Status
 
-Phase 4 Status — Transactional Outbox + Outbox Worker ✅
+Phase 5 Status — Kafka Integration ✅
 
-Phase 4 extends the notification workflow by implementing the Transactional Outbox Pattern, ensuring notification creation and event persistence occur atomically.
+Implemented Apache Kafka-based asynchronous event processing using the Transactional Outbox pattern with producer, consumer, and Dockerized Kafka infrastructure.
 
-A background worker processes pending outbox events, simulating asynchronous event publishing.
+## ✅ What is implemented in Phase 5
 
-✅ What is implemented in Phase 4
+### Kafka Infrastructure
+- Dockerized Apache Kafka broker
+- Kafka UI for topic and message inspection
+- Spring Kafka integration
 
-Transactional Outbox
+### Event Publishing
+- Kafka producer implementation using `KafkaTemplate`
+- Outbox Worker publishes events to Kafka
+- Topic configuration externalized through application properties
 
-* Implemented the Transactional Outbox pattern for reliable event publishing
-* Notification and outbox event are persisted atomically within a single transaction
+### Event Consumption
+- Kafka consumer using `@KafkaListener`
+- End-to-end verification of event flow
+- Automatic topic creation during development
 
-Outbox Persistence
-
-* Added outbox_events table using Flyway migration
-* Created OutboxEvent entity and Spring Data JPA repository
-* Linked outbox events to notifications using aggregateId
-
-Event Modeling
-
-* Introduced NotificationEventPayload DTO for event data
-* Automatic JSON serialization using Jackson ObjectMapper
-* Added OutboxEventType and OutboxStatus enums for type-safe event management
-
-Background Processing
-
-* Enabled Spring Scheduling using @EnableScheduling
-* Implemented OutboxWorker to poll pending events at fixed intervals
-* Automatic processing of events with status NEW
-
-Event Lifecycle
-
-* Simulated asynchronous event publishing through the Outbox Worker
-* Automatically updates processed events from NEW to PROCESSED
-* Prepared the architecture for seamless Kafka integration in the next phase
-
-Reliability
-
-* Ensured notification creation and event persistence are rolled back together on failure using @Transactional
-* Established a production-style foundation for reliable, event-driven communication
+### Event-Driven Flow
+- Notification persisted to PostgreSQL
+- Outbox event published to Kafka
+- Consumer successfully receives notification events
 
 ###  Database Layer
 - PostgreSQL integration using Spring Boot
