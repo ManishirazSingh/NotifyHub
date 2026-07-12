@@ -1,4 +1,4 @@
-package com.NotifyHub.notification_service.enums;
+package com.notifyhub.common.enums;
 
 public enum OutboxEventType {
     NOTIFICATION_CREATED,

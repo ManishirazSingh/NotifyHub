@@ -1,6 +1,7 @@
 package com.NotifyHub.notification_service.dto;
 
-import com.NotifyHub.notification_service.enums.NotificationType;
+import com.notifyhub.common.enums.NotificationType;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 

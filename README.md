@@ -6,62 +6,28 @@ The architecture, module boundaries, and implementation roadmap are defined in d
 
 ## Current Status
 
-Phase 5 Status — Kafka Integration ✅
+Phase 6 Status — Consumers Created ✅
 
-Implemented Apache Kafka-based asynchronous event processing using the Transactional Outbox pattern with producer, consumer, and Dockerized Kafka infrastructure.
+Implemented independent Email and SMS consumer microservices using Apache Kafka with shared event contracts through a common library.
 
-## ✅ What is implemented in Phase 5
+## ✅ What is implemented in Phase 6
 
-### Kafka Infrastructure
-- Dockerized Apache Kafka broker
-- Kafka UI for topic and message inspection
-- Spring Kafka integration
+### Consumer Services
+- Independent Email Service and SMS Service microservices
+- Shared event contracts through common-lib
+- Kafka consumers using @KafkaListener
 
-### Event Publishing
-- Kafka producer implementation using `KafkaTemplate`
-- Outbox Worker publishes events to Kafka
-- Topic configuration externalized through application properties
+### Event Processing
+- Email Service processes EMAIL notifications
+- SMS Service processes SMS notifications
+- Event filtering based on NotificationType
 
-### Event Consumption
-- Kafka consumer using `@KafkaListener`
-- End-to-end verification of event flow
-- Automatic topic creation during development
+### Microservice Architecture
+- Notification Service publishes events only
+- Consumer services process notifications independently
+- Shared DTOs and enums extracted into common-lib
 
-### Event-Driven Flow
-- Notification persisted to PostgreSQL
-- Outbox event published to Kafka
-- Consumer successfully receives notification events
 
-###  Database Layer
-- PostgreSQL integration using Spring Boot
-- JPA/Hibernate ORM setup
-- Flyway migration-based schema management
-
-### Persistence
-- Notification entity mapped to database table
-- UUID-based primary key generation
-- Repository layer using Spring Data JPA
-
-###  API Enhancements
-- POST /notifications → persists notification in DB
-- GET /notifications/{id} → fetches notification by UUID
-
-###  Domain Modeling
-- NotificationStatus enum for type-safe state management
-- NotificationType enum for channel abstraction
-
-###  Validation & Safety
-- Request validation using Bean Validation (@Valid)
-- Global exception handling with proper HTTP status codes
-- 404 handling for missing resources
-
-### ️ Auditing
-- Automatic createdAt timestamp using @PrePersist
-
-###  Transaction Management
-- Service layer transactional boundaries using @Transactional
-
----
 ## Notification API
 
 Base URL for local development:
@@ -139,13 +105,12 @@ PostgreSQL integration complete
 Flyway schema migrations active  
 Independent service ports configured
 Transactional Outbox for Events implemented.
+Kafka Integration Completed (Producer and Consumer)
 
 ---
 
 ## Next Phase Goals
 
-Transactional Outbox pattern implementation  
-Event publishing foundation for Kafka integration  
 Redis idempotency layer  
 Retry + DLQ mechanisms  
 Kafka-based async delivery system  

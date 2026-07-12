@@ -1,16 +1,16 @@
 package com.NotifyHub.notification_service.service;
 
-import com.NotifyHub.notification_service.dto.NotificationEventPayload;
 import com.NotifyHub.notification_service.dto.NotificationRequest;
 import com.NotifyHub.notification_service.dto.NotificationResponse;
 import com.NotifyHub.notification_service.entity.Notification;
 import com.NotifyHub.notification_service.entity.OutboxEvent;
-import com.NotifyHub.notification_service.enums.OutboxEventType;
 import com.NotifyHub.notification_service.exception.NotificationNotFoundException;
 import com.NotifyHub.notification_service.repository.NotificationRepository;
 import com.NotifyHub.notification_service.repository.OutboxEventRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.notifyhub.common.dto.NotificationEventPayload;
+import com.notifyhub.common.enums.OutboxEventType;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +34,7 @@ public class NotificationService {
     {
         Notification notification=new Notification(req.getUserId(),req.getType(), req.getTitle(), req.getMessage());
         Notification saved =repository.save(notification);
-        NotificationEventPayload payload = new NotificationEventPayload(saved.getId(), saved.getUserId(), saved.getType(), saved.getStatus());
+        NotificationEventPayload payload = new NotificationEventPayload(saved.getId(), saved.getUserId(), saved.getType(), saved.getStatus(), saved.getMessage(), saved.getTitle());
         String payloadJson;
         try {
             payloadJson = objectMapper.writeValueAsString(payload);
