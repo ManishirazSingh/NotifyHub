@@ -6,78 +6,28 @@ The architecture, module boundaries, and implementation roadmap are defined in d
 
 ## Current Status
 
-Phase 4 Status — Transactional Outbox + Outbox Worker ✅
+Phase 6 Status — Consumers Created ✅
 
-Phase 4 extends the notification workflow by implementing the Transactional Outbox Pattern, ensuring notification creation and event persistence occur atomically.
+Implemented independent Email and SMS consumer microservices using Apache Kafka with shared event contracts through a common library.
 
-A background worker processes pending outbox events, simulating asynchronous event publishing.
+## ✅ What is implemented in Phase 6
 
-✅ What is implemented in Phase 4
+### Consumer Services
+- Independent Email Service and SMS Service microservices
+- Shared event contracts through common-lib
+- Kafka consumers using @KafkaListener
 
-Transactional Outbox
+### Event Processing
+- Email Service processes EMAIL notifications
+- SMS Service processes SMS notifications
+- Event filtering based on NotificationType
 
-* Implemented the Transactional Outbox pattern for reliable event publishing
-* Notification and outbox event are persisted atomically within a single transaction
+### Microservice Architecture
+- Notification Service publishes events only
+- Consumer services process notifications independently
+- Shared DTOs and enums extracted into common-lib
 
-Outbox Persistence
 
-* Added outbox_events table using Flyway migration
-* Created OutboxEvent entity and Spring Data JPA repository
-* Linked outbox events to notifications using aggregateId
-
-Event Modeling
-
-* Introduced NotificationEventPayload DTO for event data
-* Automatic JSON serialization using Jackson ObjectMapper
-* Added OutboxEventType and OutboxStatus enums for type-safe event management
-
-Background Processing
-
-* Enabled Spring Scheduling using @EnableScheduling
-* Implemented OutboxWorker to poll pending events at fixed intervals
-* Automatic processing of events with status NEW
-
-Event Lifecycle
-
-* Simulated asynchronous event publishing through the Outbox Worker
-* Automatically updates processed events from NEW to PROCESSED
-* Prepared the architecture for seamless Kafka integration in the next phase
-
-Reliability
-
-* Ensured notification creation and event persistence are rolled back together on failure using @Transactional
-* Established a production-style foundation for reliable, event-driven communication
-
-###  Database Layer
-- PostgreSQL integration using Spring Boot
-- JPA/Hibernate ORM setup
-- Flyway migration-based schema management
-
-### Persistence
-- Notification entity mapped to database table
-- UUID-based primary key generation
-- Repository layer using Spring Data JPA
-
-###  API Enhancements
-- POST /notifications → persists notification in DB
-- GET /notifications/{id} → fetches notification by UUID
-
-###  Domain Modeling
-- NotificationStatus enum for type-safe state management
-- NotificationType enum for channel abstraction
-
-###  Validation & Safety
-- Request validation using Bean Validation (@Valid)
-- Global exception handling with proper HTTP status codes
-- 404 handling for missing resources
-
-### ️ Auditing
-- Automatic createdAt timestamp using @PrePersist
-
-###  Transaction Management
-- Service layer transactional boundaries using @Transactional
-
----
 ## Notification API
 
 Base URL for local development:
@@ -155,13 +105,12 @@ PostgreSQL integration complete
 Flyway schema migrations active  
 Independent service ports configured
 Transactional Outbox for Events implemented.
+Kafka Integration Completed (Producer and Consumer)
 
 ---
 
 ## Next Phase Goals
 
-Transactional Outbox pattern implementation  
-Event publishing foundation for Kafka integration  
 Redis idempotency layer  
 Retry + DLQ mechanisms  
 Kafka-based async delivery system  

@@ -1,7 +1,7 @@
 package com.NotifyHub.notification_service.entity;
 
-import com.NotifyHub.notification_service.enums.OutboxEventType;
 import com.NotifyHub.notification_service.enums.OutboxStatus;
+import com.notifyhub.common.enums.OutboxEventType;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;

@@ -1,11 +1,12 @@
 package com.NotifyHub.notification_service.entity;
 
-import com.NotifyHub.notification_service.enums.NotificationStatus;
-import com.NotifyHub.notification_service.enums.NotificationType;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+
+import com.notifyhub.common.enums.NotificationStatus;
+import com.notifyhub.common.enums.NotificationType;
 
 @Entity
 @Table(name = "notifications")

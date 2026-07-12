@@ -1,9 +1,9 @@
 package com.NotifyHub.notification_service.dto;
 
-import com.NotifyHub.notification_service.enums.NotificationStatus;
-import com.NotifyHub.notification_service.enums.NotificationType;
-
 import java.time.LocalDateTime;
+
+import com.notifyhub.common.enums.NotificationStatus;
+import com.notifyhub.common.enums.NotificationType;
 
 public class NotificationResponse {
 
