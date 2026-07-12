@@ -48,4 +48,8 @@ public class OutboxEvent {
     public void setStatus(OutboxStatus status) {
         this.status = status;
     }
+
+    public String getId() {
+        return id;
+    }
 }
