@@ -9,6 +9,8 @@ import com.notifyhub.common.enums.NotificationType;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import com.notifyhub.sms_service.service.IdempotencyService;
 import com.notifyhub.sms_service.service.SmsService;
 
 @Service
@@ -17,7 +19,7 @@ import com.notifyhub.sms_service.service.SmsService;
 public class SmsConsumer {
     private final SmsService smsService;
     private final ObjectMapper objectMapper;
-
+    private final IdempotencyService idempotencyService;
 
     @KafkaListener(topics = "${app.kafka.notification-topic}", groupId = "${spring.kafka.consumer.group-id}")
     public void consume(String payload) {
@@ -26,7 +28,12 @@ public class SmsConsumer {
             if(event.getType() != NotificationType.SMS) {
                 return;
             }
+            if(idempotencyService.isProcessed(event.getNotificationId())){
+                log.info("Notification {} has already been processed.", event.getNotificationId());
+                return;
+            }
             smsService.process(event);
+            idempotencyService.markAsProcessed(event.getNotificationId());
         } catch (Exception e) {
             log.error("Error occurred while consuming sms notification event", e);
         }
