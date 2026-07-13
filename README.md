@@ -6,27 +6,31 @@ The architecture, module boundaries, and implementation roadmap are defined in d
 
 ## Current Status
 
-Phase 6 Status — Consumers Created ✅
+Phase 6 Status — Redis Idempotency ✅
 
-Implemented independent Email and SMS consumer microservices using Apache Kafka with shared event contracts through a common library.
+The platform ensures reliable event processing by preventing duplicate notification handling across Email and SMS consumer services. Redis is used to track processed notification events, enabling idempotent consumers capable of safely handling repeated Kafka message deliveries. The next phase introduces Retry mechanisms and Dead Letter Queues (DLQ) for resilient failure handling.
 
 ## ✅ What is implemented in Phase 6
 
-### Consumer Services
-- Independent Email Service and SMS Service microservices
-- Shared event contracts through common-lib
-- Kafka consumers using @KafkaListener
+### Redis Integration
+- Integrated Redis as an in-memory datastore for idempotency
+- Configured Spring Data Redis for consumer services
+- Docker Compose updated to include Redis
 
-### Event Processing
-- Email Service processes EMAIL notifications
-- SMS Service processes SMS notifications
-- Event filtering based on NotificationType
+### Idempotent Event Processing
+- Implemented IdempotencyService to detect duplicate Kafka events
+- Processed notification IDs stored in Redis with automatic expiration (TTL)
+- Duplicate events are identified and skipped before business processing
 
-### Microservice Architecture
-- Notification Service publishes events only
-- Consumer services process notifications independently
-- Shared DTOs and enums extracted into common-lib
+### Consumer Reliability
+- Email Service processes each notification only once
+- SMS Service processes each notification only once
+- Duplicate Kafka message deliveries are safely ignored
 
+### Distributed Systems Pattern
+- Implemented idempotent consumer pattern for event-driven architecture
+- Prevented duplicate notification delivery caused by Kafka message reprocessing
+- Centralized idempotency logic for clean and reusable design
 
 ## Notification API
 
@@ -106,12 +110,11 @@ Flyway schema migrations active
 Independent service ports configured
 Transactional Outbox for Events implemented.
 Kafka Integration Completed (Producer and Consumer)
-
+Redis idempotency layer  
 ---
 
 ## Next Phase Goals
 
-Redis idempotency layer  
 Retry + DLQ mechanisms  
 Kafka-based async delivery system  
 Observability (logs, metrics, tracing)
