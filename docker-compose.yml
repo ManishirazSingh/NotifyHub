@@ -4,7 +4,7 @@ services:
     container_name: kafka
 
     ports:
-      - "9092:9092"
+      - "${KAFKA_PORT}:9092"
 
     environment:
       KAFKA_NODE_ID: 1
@@ -44,5 +44,85 @@ services:
     container_name: redis
 
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT}:6379"
     restart: unless-stopped
+  
+  postgres:
+    image: postgres:17
+    container_name: postgres
+
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+
+    ports:
+      - "${POSTGRES_PORT}:5432"
+
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+    restart: unless-stopped
+
+  notification-service:
+    build:
+      context: ./notification-service
+
+    container_name: notification-service
+
+    ports:
+      - "${NOTIFICATION_PORT}:8081"
+
+    depends_on:
+      - postgres
+      - kafka
+      - redis
+
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/notifyhub
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+
+  email-service:
+    build:
+      context: ./email-service
+
+    container_name: email-service
+
+    ports:
+      - "${EMAIL_PORT}:8082"
+
+    depends_on:
+      - kafka
+      - redis
+
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379  
+
+  sms-service:
+    build:
+      context: ./sms-service
+    container_name: sms-service
+
+    ports:
+      - "${SMS_PORT}:8083"
+    depends_on:
+      - kafka
+      - redis 
+
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+
+volumes:
+  postgres-data:
