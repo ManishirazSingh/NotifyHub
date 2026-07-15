@@ -6,31 +6,28 @@ The architecture, module boundaries, and implementation roadmap are defined in d
 
 ## Current Status
 
-Phase 6 Status — Redis Idempotency ✅
+Phase 8 Status — Redis Idempotency ✅
 
-The platform ensures reliable event processing by preventing duplicate notification handling across Email and SMS consumer services. Redis is used to track processed notification events, enabling idempotent consumers capable of safely handling repeated Kafka message deliveries. The next phase introduces Retry mechanisms and Dead Letter Queues (DLQ) for resilient failure handling.
+The notification platform now supports resilient event processing through automatic retries and Dead Letter Queue integration. Temporary failures are retried using Spring Kafka's error handling, while unrecoverable events are safely routed to a dedicated DLT for future analysis or replay. The next phase focuses on observability through health checks, metrics, and application monitoring.
 
-## ✅ What is implemented in Phase 6
+## ✅ What is implemented in Phase 8
 
-### Redis Integration
-- Integrated Redis as an in-memory datastore for idempotency
-- Configured Spring Data Redis for consumer services
-- Docker Compose updated to include Redis
-
-### Idempotent Event Processing
-- Implemented IdempotencyService to detect duplicate Kafka events
-- Processed notification IDs stored in Redis with automatic expiration (TTL)
-- Duplicate events are identified and skipped before business processing
-
-### Consumer Reliability
-- Email Service processes each notification only once
-- SMS Service processes each notification only once
-- Duplicate Kafka message deliveries are safely ignored
-
-### Distributed Systems Pattern
-- Implemented idempotent consumer pattern for event-driven architecture
-- Prevented duplicate notification delivery caused by Kafka message reprocessing
-- Centralized idempotency logic for clean and reusable design
+### Retry Mechanism
+-- Configured Spring Kafka DefaultErrorHandler for automatic retry handling
+-- Implemented fixed backoff retry policy with configurable retry attempts
+-- Prevented immediate message loss caused by transient processing failures
+### Dead Letter Queue (DLQ)
+-- Integrated DeadLetterPublishingRecoverer
+-- Configured failed events to be published to the notification-events-dlt topic after retry exhaustion
+-- Preserved failed notification events for later inspection and replay
+### Failure Handling
+-- Automatic retry for temporary processing failures
+-- Reliable handling of unrecoverable events through Dead Letter Topic
+-- Verified end-to-end retry and DLQ behavior using Kafka UI
+### Production Reliability
+-- Implemented resilient Kafka consumer error handling
+-- Separated transient failures from permanent failures
+-- Improved overall reliability of asynchronous notification processing
 
 ## Notification API
 
@@ -111,10 +108,9 @@ Independent service ports configured
 Transactional Outbox for Events implemented.
 Kafka Integration Completed (Producer and Consumer)
 Redis idempotency layer  
+Retry + DLQ mechanisms 
 ---
 
-## Next Phase Goals
+## Next Phase Goals 
 
-Retry + DLQ mechanisms  
-Kafka-based async delivery system  
 Observability (logs, metrics, tracing)
