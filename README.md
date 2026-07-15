@@ -6,28 +6,26 @@ The architecture, module boundaries, and implementation roadmap are defined in d
 
 ## Current Status
 
-Phase 8 Status — Redis Idempotency ✅
+Phase 9 Status — Observability ✅
 
-The notification platform now supports resilient event processing through automatic retries and Dead Letter Queue integration. Temporary failures are retried using Spring Kafka's error handling, while unrecoverable events are safely routed to a dedicated DLT for future analysis or replay. The next phase focuses on observability through health checks, metrics, and application monitoring.
+The platform now provides production-style observability through Spring Boot Actuator. Each microservice exposes health, information, and metrics endpoints, enabling runtime monitoring and diagnostics. Structured logging improves traceability of notification processing, making it easier to monitor, debug, and troubleshoot distributed workflows.
 
-## ✅ What is implemented in Phase 8
+## ✅ What is implemented in Phase 9
 
-### Retry Mechanism
--- Configured Spring Kafka DefaultErrorHandler for automatic retry handling
--- Implemented fixed backoff retry policy with configurable retry attempts
--- Prevented immediate message loss caused by transient processing failures
-### Dead Letter Queue (DLQ)
--- Integrated DeadLetterPublishingRecoverer
--- Configured failed events to be published to the notification-events-dlt topic after retry exhaustion
--- Preserved failed notification events for later inspection and replay
-### Failure Handling
--- Automatic retry for temporary processing failures
--- Reliable handling of unrecoverable events through Dead Letter Topic
--- Verified end-to-end retry and DLQ behavior using Kafka UI
-### Production Reliability
--- Implemented resilient Kafka consumer error handling
--- Separated transient failures from permanent failures
--- Improved overall reliability of asynchronous notification processing
+### Spring Boot Actuator
+-- Added Spring Boot Actuator to all microservices
+-- Exposed production-ready monitoring endpoints
+-- Configured application health and information endpoints
+### Health Monitoring
+-- Enabled /actuator/health for service health checks
+-- Configured detailed health information for runtime diagnostics
+-- Integrated database health monitoring through Spring Boot
+### Application Information
+-- Exposed application metadata using /actuator/info
+-- Added service name, version, and description for easier identification
+### Metrics
+-- Enabled /actuator/metrics for runtime metrics collection
+-- Prepared the services for integration with monitoring platforms such as Prometheus and Grafana
 
 ## Notification API
 
@@ -109,8 +107,9 @@ Transactional Outbox for Events implemented.
 Kafka Integration Completed (Producer and Consumer)
 Redis idempotency layer  
 Retry + DLQ mechanisms 
+Observability (logs, metrics, tracing)
 ---
 
 ## Next Phase Goals 
 
-Observability (logs, metrics, tracing)
+Docker Compose Runtime
