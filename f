@@ -1,0 +1,9 @@
+  feature/project-foundation[m
+  main[m
+  phase-1-bootstrap[m
+  phase-2-notification-api[m
+  phase-3-persistence-layer[m
+  phase-4-outbox[m
+  phase-5-kafka[m
+  phase-6-consumer[m
+* [32mphase-7-redis-idempotency[m

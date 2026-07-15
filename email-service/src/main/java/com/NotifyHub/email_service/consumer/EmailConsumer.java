@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import com.notifyhub.email_service.service.EmailService;
 import com.notifyhub.email_service.service.IdempotencyService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.kafka.annotation.KafkaListener;
 import com.notifyhub.common.enums.NotificationType;
@@ -19,20 +20,24 @@ public class EmailConsumer {
 
     @KafkaListener(topics = "${app.kafka.notification-topic}", groupId = "${spring.kafka.consumer.group-id}")
     public void consume(String payload) {
-        try{
-            NotificationEventPayload event = objectMapper.readValue(payload, NotificationEventPayload.class);
-            if(idempotencyService.isProcessed(event.getNotificationId())){
-                log.info("Notification {} has already been processed.", event.getNotificationId());
-                return;
-            }
-            if(event.getType() != NotificationType.EMAIL) {
-                return;
-            }
-            emailService.process(event);
-            idempotencyService.markAsProcessed(event.getNotificationId());
-        } catch (Exception e) {
-            log.error("Error occurred while consuming email notification event", e);
+        NotificationEventPayload event;
+        try {
+            event = objectMapper.readValue(payload, NotificationEventPayload.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Failed to deserialize notification event", e);
         }
+        if(idempotencyService.isProcessed(event.getNotificationId())){
+            log.info("Notification {} has already been processed.", event.getNotificationId());
+            return;
+        }
+        if(event.getType() != NotificationType.EMAIL) {
+            return;
+        }
+        if ("FAIL".equalsIgnoreCase(event.getTitle())) {
+            throw new RuntimeException("Simulating email service failure");
+        }
+        emailService.process(event);
+        idempotencyService.markAsProcessed(event.getNotificationId());
     }
     
 
